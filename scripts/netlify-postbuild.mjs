@@ -62,7 +62,7 @@ writeFileSync(join(out, "_headers"), `/*
 `);
 
 // The app's own pages (the React router takes over from there). API/public-site rules are in netlify.toml.
-writeFileSync(join(out, "_redirects"), `/            /app          302
+writeFileSync(join(out, "_redirects"), `/            /app          302!
 /login       /login.html   200
 /signup      /signup.html  200
 /app         /index.html   200
