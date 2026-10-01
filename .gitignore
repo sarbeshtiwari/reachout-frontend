@@ -1,0 +1,26 @@
+# ---------------- dependencies and build output
+node_modules/
+netlify-dist/
+dist/
+.vite/
+*.local
+
+# ---------------- secrets (never commit)
+*.key
+*.pem
+*.p12
+secrets/
+data/
+backups/
+.env
+.env.*
+!.env.example
+
+# ---------------- logs / OS / editors
+*.log
+npm-debug.log*
+.netlify/
+.DS_Store
+.idea/
+.vscode/
+*.swp

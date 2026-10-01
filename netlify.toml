@@ -1,0 +1,64 @@
+# Netlify site 2: the Reachout app (/app, /login, /signup). Base directory on Netlify: frontend
+#
+# ▶ Replace the two addresses below with yours:
+#     reachout-api.onrender.com  → your Render service address
+#     reachout.netlify.app       → your landing-page Netlify address
+# ▶ In Netlify → Site configuration → Environment variables, add NETLIFY_PROXY_SECRET
+#   (the same long random value you set on Render). Netlify signs every forwarded request with it.
+
+[build]
+  command = "npm ci && npm run build:netlify"
+  publish = "netlify-dist"
+
+[build.environment]
+  NODE_VERSION = "20"
+  VITE_LANDING_URL = "https://reachout.netlify.app"
+
+# Everything the backend serves, forwarded behind the scenes (the browser only ever sees this site,
+# so the login cookie stays first-party). "signed" adds Netlify's signature that the backend checks.
+[[redirects]]
+  from = "/api/*"
+  to = "https://reachout-api.onrender.com/api/:splat"
+  status = 200
+  force = true
+  signed = "NETLIFY_PROXY_SECRET"
+
+[[redirects]]
+  from = "/p/*"
+  to = "https://reachout-api.onrender.com/p/:splat"
+  status = 200
+  force = true
+  signed = "NETLIFY_PROXY_SECRET"
+
+[[redirects]]
+  from = "/site-preview/*"
+  to = "https://reachout-api.onrender.com/site-preview/:splat"
+  status = 200
+  force = true
+  signed = "NETLIFY_PROXY_SECRET"
+
+[[redirects]]
+  from = "/o/*"
+  to = "https://reachout-api.onrender.com/o/:splat"
+  status = 200
+  force = true
+  signed = "NETLIFY_PROXY_SECRET"
+
+[[redirects]]
+  from = "/robots.txt"
+  to = "https://reachout-api.onrender.com/robots.txt"
+  status = 200
+  force = true
+  signed = "NETLIFY_PROXY_SECRET"
+
+[[redirects]]
+  from = "/sitemap.xml"
+  to = "https://reachout-api.onrender.com/sitemap.xml"
+  status = 200
+  force = true
+  signed = "NETLIFY_PROXY_SECRET"
+
+[[redirects]]
+  from = "/contact"
+  to = "https://reachout.netlify.app/contact"
+  status = 301

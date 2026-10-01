@@ -1,0 +1,19 @@
+# App: install and build exactly as Netlify does.
+name: CI
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+      - run: npm ci
+      - run: npm run build:netlify
+        env:
+          VITE_LANDING_URL: https://reachout.netlify.app
+      - run: test -f netlify-dist/index.html && test -f netlify-dist/_headers && test -f netlify-dist/sw.js
