@@ -115,7 +115,7 @@ function Row({ it, onDrop, onEdit, onRemove, onPatch }) {
   const drag = useDragControls();
   return (
     <Reorder.Item value={it} dragListener={false} dragControls={drag} onDragEnd={onDrop} className={`card pf-row ${it.hidden ? "hidden" : ""}`}
-      initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} whileDrag={{ scale: 1.02, boxShadow: "0 24px 50px -20px rgba(79,70,229,.5)" }}>
+      initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} whileDrag={{ scale: 1.02, boxShadow: "0 18px 40px -20px rgba(23,25,28,.35)" }}>
       <button className="pf-grip" onPointerDown={e => drag.start(e)} aria-label="Drag to reorder"><Icon name="menu" /></button>
       <button className="pf-thumb" onClick={onEdit}><img src={it.image} alt="" loading="lazy" /></button>
       <div className="pf-info">

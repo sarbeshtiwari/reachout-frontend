@@ -10,8 +10,27 @@ import { Dropzone, EmailBadge, SendBadge } from "../ui/shared";
 import { extraCols } from "./Campaign";
 
 const CORE = ["name", "company", "phone", "email"];
-const STATUS = ["wa_status", "wa_last", "email_status", "email_last", "email_opened", "replied_at", "reply_intent", "reply_count"];
+const STATUS = ["wa_status", "wa_last", "email_status", "email_last", "email_opened", "replied_at", "reply_intent", "reply_count", "added_at"];
 const PH = { name: "Add name", company: "Add company", phone: "Add phone", email: "Add email" };
+
+// Whole days since the contact was added (0 = today), or null for contacts saved before dates were recorded.
+// What kind of inbox an address reaches: hiring (careers@, jobs@, hr@…) or a general one (info@, contact@…).
+const HIRING = /^(careers?|jobs?|hiring|recruit\w*|talent\w*|hr|people|join\w*|apply|applications?|resumes?|cv)([._-]|$)/i;
+const GENERAL = /^(hello|hi|info|contact|team|office|mail|enquir\w*|inquir\w*|general|support|sales|admin)([._-]|$)/i;
+function addressKind(r) {
+  if (!r.email) return "none";
+  if (r.email_type === "careers") return "hiring";
+  if (r.email_type === "general") return "general";
+  const local = r.email.split("@")[0];
+  return HIRING.test(local) ? "hiring" : GENERAL.test(local) ? "general" : "person";
+}
+
+function addedAge(r) {
+  if (!r.added_at) return null;
+  const d = new Date(r.added_at); if (isNaN(d)) return null;
+  const start = x => new Date(x.getFullYear(), x.getMonth(), x.getDate()).getTime();
+  return Math.round((start(new Date()) - start(d)) / 86400000);
+}
 
 export default function Contacts() {
   const app = useApp();
@@ -19,6 +38,15 @@ export default function Contacts() {
   const [q, setQ] = useState("");
   const [status, setStatus] = useState("");
   const [stage, setStage] = useState("");
+  const [added, setAdded] = useState("");
+  const [list, setList] = useState("");
+  const [kind, setKind] = useState("");
+  const lists = useMemo(() => [...new Set(data.recipients.map(r => r.list).filter(Boolean))].sort(), [data.recipients]);
+  const addedCounts = useMemo(() => {
+    const c = { today: 0, yesterday: 0, "7": 0, "30": 0, older: 0 };
+    data.recipients.forEach(r => { const a = addedAge(r); if (a === null) c.older++; else { if (a === 0) c.today++; if (a === 1) c.yesterday++; if (a < 7) c["7"]++; if (a < 30) c["30"]++; } });
+    return c;
+  }, [data.recipients]);
   const [panel, setPanel] = useState(null);
   const [save, setSave] = useState({ text: "", tone: "" });
   const dq = useDebounced(q, 120);
@@ -28,6 +56,15 @@ export default function Contacts() {
     const s = dq.trim().toLowerCase();
     if (s && !Object.entries(r).some(([k, v]) => k !== "id" && String(v).toLowerCase().includes(s))) return false;
     if (stage && (r.stage || "new") !== stage) return false;
+    if (list && (r.list || "") !== (list === "(none)" ? "" : list)) return false;
+    if (kind && addressKind(r) !== kind) return false;
+    if (added) {
+      const a = addedAge(r);
+      if (added === "today" && a !== 0) return false;
+      if (added === "yesterday" && a !== 1) return false;
+      if ((added === "7" || added === "30") && (a === null || a >= +added)) return false;
+      if (added === "older" && a !== null) return false;
+    }
     if (status === "pending") return !r.wa_status && !r.email_status;
     if (status === "sent") return r.wa_status === "sent" || r.email_status === "sent";
     if (status === "failed") return ["failed", "not_on_whatsapp"].includes(r.wa_status) || ["failed", "bounced", "invalid"].includes(r.email_status);
@@ -35,8 +72,9 @@ export default function Contacts() {
     if (status === "unopened") return r.email_status === "sent" && !r.email_opened;
     if (status === "replied") return !!r.replied_at;
     return true;
-  }), [data.recipients, dq, status, stage]);
-  const pg = usePager(rows, [dq, status, stage].join("|"), 50);
+  }), [data.recipients, dq, status, stage, added, list, kind]);
+  const pg = usePager(rows, [dq, status, stage, added, list, kind].join("|"), 50);
+  const filtered = !!(dq || status || stage || added || list || kind);
   const allOn = rows.length > 0 && rows.every(r => selected.has(r.id));
   const toggleSel = (id, on) => setSelected(s => { const n = new Set(s); on ? n.add(id) : n.delete(id); return n; });
 
@@ -94,6 +132,25 @@ export default function Contacts() {
         <select className="select auto" value={stage} onChange={e => setStage(e.target.value)} aria-label="Filter by stage">
           <option value="">All stages</option>{Object.entries(me.stages).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
         </select>
+        <select className="select auto" value={added} onChange={e => setAdded(e.target.value)} aria-label="Filter by when added">
+          <option value="">Added any time</option>
+          <option value="today">Added today ({addedCounts.today})</option>
+          <option value="yesterday">Added yesterday ({addedCounts.yesterday})</option>
+          <option value="7">Added in the last 7 days ({addedCounts["7"]})</option>
+          <option value="30">Added in the last 30 days ({addedCounts["30"]})</option>
+          <option value="older">Added earlier ({addedCounts.older})</option>
+        </select>
+        {lists.length > 0 && <select className="select auto" value={list} onChange={e => setList(e.target.value)} aria-label="Filter by list">
+          <option value="">All lists</option>{lists.map(l => <option key={l} value={l}>{l}</option>)}<option value="(none)">No list</option>
+        </select>}
+        <select className="select auto" value={kind} onChange={e => setKind(e.target.value)} aria-label="Filter by email address type">
+          <option value="">Any address</option>
+          <option value="hiring">Careers / HR address</option>
+          <option value="general">General address (info@, contact@…)</option>
+          <option value="person">A person's address</option>
+          <option value="none">No email</option>
+        </select>
+        {filtered && <Button variant="ghost" size="sm" icon="x" onClick={() => { setQ(""); setStatus(""); setStage(""); setAdded(""); setList(""); setKind(""); }}>Clear</Button>}
         <span className="grow" />
         <Button icon="mail" className={panel === "sent" ? "on" : ""} onClick={() => togglePanel("sent")}>Import from Sent mail</Button>
         <Button icon="upload" className={panel === "import" ? "on" : ""} onClick={() => togglePanel("import")}>Import Excel</Button>

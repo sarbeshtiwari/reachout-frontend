@@ -79,7 +79,7 @@ export default function SendView() {
           initial={{ opacity: 0, scale: 1.03 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: .98 }} transition={{ duration: .35 }}>
           <div className="hud-grid" aria-hidden="true" /><div className="hud-scan" aria-hidden="true" />
           <header className="hud-top">
-            <div className="hud-brand"><span className="hud-logo"><Icon name="send" /></span><span>REACHOUT<small>OUTREACH CONTROL</small></span></div>
+            <div className="hud-brand"><span className="hud-logo"><Icon name="logo" /></span><span>REACHOUT<small>OUTREACH CONTROL</small></span></div>
             <div className="hud-chips">
               <span className="hud-chip"><i className="led" /><span>{{ done: "MISSION COMPLETE", stopped: "LINK CLOSED", error: "FAULT", stopping: "ABORTING" }[job.phase] || "UPLINK ACTIVE"}</span></span>
               <span className="hud-chip">{(job.dry_run ? "Test run · " : "") + ((job.channels || []).map(c => label[c]).join(" + ") || "Preparing")}</span>

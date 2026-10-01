@@ -101,7 +101,7 @@ function Boot() {
   return (
     <div className="boot">
       <motion.div className="boot-logo" initial={{ scale: .6, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ type: "spring", stiffness: 300, damping: 18 }}>
-        <svg viewBox="0 0 24 24" className="i"><path d="M22 2 11 13" /><path d="m22 2-7 20-4-9-9-4 20-7z" /></svg>
+        <svg viewBox="0 0 24 24" className="i"><path d="M7 20v-9a4 4 0 0 1 4-4h7.5" /><path d="m15 3.5 3.5 3.5-3.5 3.5" /></svg>
       </motion.div>
       <motion.div className="boot-bar" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: .2 }}><span /></motion.div>
     </div>

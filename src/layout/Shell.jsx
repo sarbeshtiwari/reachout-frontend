@@ -103,7 +103,7 @@ function Sidebar({ active, counts, collapsed, mobileOpen, toggle, openPalette })
       <div className="side-glow" aria-hidden="true" />
       <div className="side-head">
         <a href="/app/dashboard" className="brand-link" {...tipProps("Reachout")}>
-          <span className="logo"><Icon name="send" /></span>
+          <span className="logo"><Icon name="logo" /></span>
           <span className="nav-text brand-txt"><span className="brand-name">Reachout</span><span className="brand-sub">Outreach & career</span></span>
         </a>
         <button className="collapse-btn" onClick={toggle} aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"} {...tipProps(collapsed ? "Expand sidebar" : "Collapse")}><Icon name="sidebar" /></button>

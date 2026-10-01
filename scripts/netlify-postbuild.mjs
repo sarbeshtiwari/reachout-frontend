@@ -19,7 +19,7 @@ writeFileSync(join(out, "login.html"), page("Log in · Reachout", "noindex, foll
 writeFileSync(join(out, "signup.html"), page("Create a free account · Reachout", "index, follow"));
 
 writeFileSync(join(out, "site.webmanifest"), JSON.stringify({
-  name: "Reachout", short_name: "Reachout", start_url: "/app", display: "standalone", background_color: "#ffffff", theme_color: "#4f46e5",
+  name: "Reachout", short_name: "Reachout", start_url: "/app", display: "standalone", background_color: "#fbfaf7", theme_color: "#0f6b54",
   icons: [{ src: "/assets/icon-192.png", sizes: "192x192", type: "image/png" }, { src: "/assets/icon-512.png", sizes: "512x512", type: "image/png" }],
 }));
 

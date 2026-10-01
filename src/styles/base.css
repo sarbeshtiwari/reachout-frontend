@@ -1,34 +1,35 @@
-/* Reachout 2 — design system. Indigo/violet accent, soft layered surfaces, generous radii, motion everywhere. */
+/* Reachout design system. Ink on warm paper, one green brand colour, flat fills, generous radii. */
 :root {
-  --bg: #f6f7fb;
+  --bg: #f6f5f1;
   --surface: #ffffff;
-  --surface-2: #f9fafc;
-  --muted: #eff1f7;
-  --muted-2: #e7eaf3;
-  --text: #0f1222;
-  --text-2: #2e3348;
-  --text-3: #535a73;
-  --text-4: #7a819a;
-  --border: #e5e7f0;
-  --border-strong: #d2d6e4;
-  --accent: #4f46e5;
-  --accent-2: #7c3aed;
-  --accent-hover: #4338ca;
-  --accent-soft: #eef0ff;
-  --accent-text: #4338ca;
-  --grad: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
-  --grad-soft: linear-gradient(135deg, rgba(79, 70, 229, .10), rgba(124, 58, 237, .08));
+  --surface-2: #faf9f6;
+  --muted: #efede7;
+  --muted-2: #e7e4dc;
+  --text: #17191c;
+  --text-2: #33373d;
+  --text-3: #5a5f66;
+  --text-4: #7d8288;
+  --border: #e6e3db;
+  --border-strong: #d3cfc4;
+  --accent: #0f6b54;
+  --accent-2: #c2410c;
+  --accent-hover: #0b5643;
+  --accent-soft: #e4f1ec;
+  --accent-text: #0b5643;
+  /* Flat on purpose: no gradients, no glows. --grad is kept as a name so existing rules stay valid. */
+  --grad: linear-gradient(var(--accent), var(--accent));
+  --grad-soft: linear-gradient(var(--accent-soft), var(--accent-soft));
   --success: #0f9d58; --success-soft: #e8f7ef; --success-border: #bfe8d1;
   --danger: #dc2626;  --danger-soft: #fdeeee;  --danger-border: #f7c9c9;
   --warning: #b45309; --warning-soft: #fdf5e6; --warning-border: #f6dfad;
-  --teal: #0d9488; --teal-soft: #e3f6f3; --violet: #7c3aed; --violet-soft: #f3edff;
+  --teal: #0d9488; --teal-soft: #e3f6f3; --violet: #7a4b8f; --violet-soft: #f3ecf6;
   --wa: #16a34a; --wa-bubble: #d9fdd3; --wa-bg: #efeae2; --wa-header: #008069;
-  --shadow-xs: 0 1px 2px rgba(16, 20, 45, .05);
-  --shadow-sm: 0 1px 3px rgba(16, 20, 45, .07), 0 1px 2px rgba(16, 20, 45, .04);
-  --shadow-md: 0 8px 24px -8px rgba(16, 20, 45, .14), 0 2px 6px -2px rgba(16, 20, 45, .06);
-  --shadow-lg: 0 24px 60px -16px rgba(16, 20, 45, .28), 0 8px 18px -8px rgba(16, 20, 45, .12);
-  --glow: 0 10px 30px -10px rgba(79, 70, 229, .55);
-  --ring: 0 0 0 3px rgba(79, 70, 229, .22);
+  --shadow-xs: 0 1px 2px rgba(23, 25, 28, .05);
+  --shadow-sm: 0 1px 3px rgba(23, 25, 28, .07), 0 1px 2px rgba(23, 25, 28, .04);
+  --shadow-md: 0 8px 24px -8px rgba(23, 25, 28, .14), 0 2px 6px -2px rgba(23, 25, 28, .06);
+  --shadow-lg: 0 24px 60px -16px rgba(23, 25, 28, .28), 0 8px 18px -8px rgba(23, 25, 28, .12);
+  --glow: 0 1px 2px rgba(23, 25, 28, .10), 0 2px 6px -2px rgba(23, 25, 28, .10);
+  --ring: 0 0 0 3px rgba(15, 107, 84, .22);
   --r-sm: 8px; --r: 10px; --r-lg: 14px; --r-xl: 18px;
   --font: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
@@ -36,24 +37,24 @@
   color-scheme: light;
 }
 :root[data-theme="dark"] {
-  --bg: #080a13;
-  --surface: #0f1220;
-  --surface-2: #131729;
-  --muted: #181d31;
-  --muted-2: #20263d;
-  --text: #eef0f8;
-  --text-2: #d3d7e6;
-  --text-3: #a8aec5;
-  --text-4: #7c83a0;
-  --border: #1e2438;
-  --border-strong: #2c334d;
-  --accent: #6366f1;
-  --accent-2: #8b5cf6;
-  --accent-hover: #818cf8;
-  --accent-soft: #1b1d43;
-  --accent-text: #a5b4fc;
-  --grad: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-  --grad-soft: linear-gradient(135deg, rgba(99, 102, 241, .16), rgba(139, 92, 246, .12));
+  --bg: #0d0f0e;
+  --surface: #141716;
+  --surface-2: #181c1a;
+  --muted: #1d2220;
+  --muted-2: #252b28;
+  --text: #eceeec;
+  --text-2: #d0d5d2;
+  --text-3: #a3aaa6;
+  --text-4: #79807c;
+  --border: #232927;
+  --border-strong: #313935;
+  --accent: #1e8c6a;
+  --accent-2: #f08a4b;
+  --accent-hover: #27a47d;
+  --accent-soft: #13271f;
+  --accent-text: #6fd6b4;
+  --grad: linear-gradient(var(--accent), var(--accent));
+  --grad-soft: linear-gradient(var(--accent-soft), var(--accent-soft));
   --success: #34d399; --success-soft: #0b261d; --success-border: #134e3a;
   --danger: #f87171;  --danger-soft: #2a1114;  --danger-border: #5c1d22;
   --warning: #fbbf24; --warning-soft: #2a2008; --warning-border: #5a4412;
@@ -63,8 +64,8 @@
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, .5);
   --shadow-md: 0 10px 28px -10px rgba(0, 0, 0, .7);
   --shadow-lg: 0 28px 64px -18px rgba(0, 0, 0, .85);
-  --glow: 0 10px 30px -10px rgba(99, 102, 241, .6);
-  --ring: 0 0 0 3px rgba(129, 140, 248, .35);
+  --glow: 0 1px 2px rgba(0, 0, 0, .5);
+  --ring: 0 0 0 3px rgba(111, 214, 180, .3);
   color-scheme: dark;
 }
 :root.theme-anim, :root.theme-anim * { transition: background-color .35s ease, border-color .35s ease, color .25s ease !important; }
@@ -78,7 +79,7 @@ a { color: var(--accent-text); text-decoration: none; }
 a:hover { text-decoration: underline; }
 code { font-family: var(--mono); font-size: .86em; background: var(--muted); padding: 1px 6px; border-radius: 5px; }
 button { font: inherit; color: inherit; }
-::selection { background: rgba(99, 102, 241, .25); }
+::selection { background: rgba(15, 107, 84, .2); }
 .i { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; flex: none; }
 .grow { flex: 1; }
 .help { color: var(--text-4); font-size: 12.5px; }

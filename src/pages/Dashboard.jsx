@@ -9,7 +9,7 @@ import { Bar, Doughnut, Line, centerText, gradient, useChartTheme } from "../ui/
 import { Avatar, Badge, Empty, Icon, Seg, Sk } from "../ui/kit";
 import { AppBadge, Delta, Kpi, MailSyncLine, SendBadge, STAGE_TONE } from "../ui/shared";
 
-const TONES = { applied: "#94a3b8", incomplete: "#f59e0b", in_review: "#6366f1", assessment: "#8b5cf6", shortlisted: "#14b8a6", interview: "#0d9488", offer: "#16a34a", rejected: "#ef4444", closed: "#9ca3af", withdrawn: "#cbd5e1" };
+const TONES = { applied: "#94a3b8", incomplete: "#f59e0b", in_review: "#0f6b54", assessment: "#b45309", shortlisted: "#14b8a6", interview: "#0d9488", offer: "#16a34a", rejected: "#ef4444", closed: "#9ca3af", withdrawn: "#cbd5e1" };
 const RANGES = [["7", "7 days"], ["30", "30 days"], ["90", "3 months"], ["365", "12 months"], ["0", "All time"], ["custom", "Custom"]];
 
 export default function Dashboard({ route }) {
@@ -116,7 +116,7 @@ function Glance({ d, f, show, app }) {
       {show("all apps") && <motion.div className="card chart-card span-2" initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: .1 }}>
         <div className="card-head"><h3>Applications per {unit}</h3><span className="grow" /><span className="help">{fmtDate(d.filters.from)} – {fmtDate(d.filters.to)}</span></div>
         <div className="chart-box"><Bar data={{ labels: a.months.map(m => label(m.month)), datasets: [
-          { label: "Applied", data: a.months.map(m => m.applied), backgroundColor: gradient(t.accent, t.accent2), borderRadius: 6, maxBarThickness: 26 },
+          { label: "Applied", data: a.months.map(m => m.applied), backgroundColor: t.accent, borderRadius: 6, maxBarThickness: 26 },
           { label: "Moved forward", data: a.months.map(m => m.progress), backgroundColor: "#14b8a6", borderRadius: 6, maxBarThickness: 26 },
           { label: "Not selected", data: a.months.map(m => m.rejected), backgroundColor: "#f87171", borderRadius: 6, maxBarThickness: 26 }] }}
           options={{ interaction: { mode: "index", intersect: false }, scales: { x: { grid: { display: false }, ticks: { maxRotation: 0, autoSkip: true, maxTicksLimit: 12 } }, y: { beginAtZero: true, ticks: { precision: 0 }, grid: t.grid } }, plugins: { legend: { position: "bottom" } } }} /></div>
@@ -140,14 +140,14 @@ function Glance({ d, f, show, app }) {
       {show("all outreach") && <motion.div className="card chart-card span-2" initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: .25 }}>
         <div className="card-head"><h3>Outreach per {unit}</h3><span className="grow" /><a className="btn btn-sm btn-ghost" href="/app/activity">Activity</a></div>
         <div className="chart-box"><Line data={{ labels: o.by_day.map(x => label(x.day)), datasets: [
-          { label: "Email", data: o.by_day.map(x => x.email), borderColor: t.accent, backgroundColor: gradient("rgba(99,102,241,.28)", "rgba(99,102,241,0)"), fill: true, tension: .38, pointRadius: 0, pointHoverRadius: 5, borderWidth: 2.2 },
-          { label: "WhatsApp", data: o.by_day.map(x => x.whatsapp), borderColor: "#16a34a", backgroundColor: gradient("rgba(22,163,74,.18)", "rgba(22,163,74,0)"), fill: true, tension: .38, pointRadius: 0, pointHoverRadius: 5, borderWidth: 2.2 },
+          { label: "Email", data: o.by_day.map(x => x.email), borderColor: t.accent, backgroundColor: gradient("rgba(15,107,84,.22)", "rgba(15,107,84,0)"), fill: true, tension: .38, pointRadius: 0, pointHoverRadius: 5, borderWidth: 2.2 },
+          { label: "WhatsApp", data: o.by_day.map(x => x.whatsapp), borderColor: "#c2410c", backgroundColor: gradient("rgba(194,65,12,.14)", "rgba(194,65,12,0)"), fill: true, tension: .38, pointRadius: 0, pointHoverRadius: 5, borderWidth: 2.2 },
           { label: "Failed / bounced", data: o.by_day.map(x => x.failed), borderColor: "#ef4444", borderDash: [4, 4], tension: .38, pointRadius: 0, borderWidth: 1.6 }] }}
           options={{ interaction: { mode: "index", intersect: false }, scales: { x: { grid: { display: false }, ticks: { maxTicksLimit: 8, maxRotation: 0 } }, y: { beginAtZero: true, ticks: { precision: 0 }, grid: t.grid } }, plugins: { legend: { position: "bottom" } } }} /></div>
       </motion.div>}
       {show("all apps") && <motion.div className="card chart-card" initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: .3 }}>
         <div className="card-head"><h3>Applied through</h3></div>
-        <div className="chart-box"><Bar data={{ labels: a.portals.map(x => x[0]), datasets: [{ data: a.portals.map(x => x[1]), backgroundColor: gradient(t.accent, t.accent2), borderRadius: 6, maxBarThickness: 18 }] }}
+        <div className="chart-box"><Bar data={{ labels: a.portals.map(x => x[0]), datasets: [{ data: a.portals.map(x => x[1]), backgroundColor: t.accent, borderRadius: 6, maxBarThickness: 18 }] }}
           options={{ indexAxis: "y", scales: { x: { beginAtZero: true, ticks: { precision: 0 }, grid: t.grid }, y: { grid: { display: false } } }, plugins: { legend: { display: false } } }} /></div>
       </motion.div>}
       {show("all apps") && <motion.div className="card span-2" initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: .35 }}>

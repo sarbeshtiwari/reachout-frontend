@@ -7,7 +7,7 @@ import { Alert, Button, Field, FileIcon, FormError, Icon, Switch, fail, modal, s
 import { FieldChips, insertAt } from "../ui/shared";
 
 const CORE = ["name", "company", "phone", "email"];
-const STATUS = ["wa_status", "wa_last", "email_status", "email_last", "email_opened", "replied_at", "reply_intent", "reply_count"];
+const STATUS = ["wa_status", "wa_last", "email_status", "email_last", "email_opened", "replied_at", "reply_intent", "reply_count", "added_at"];
 const CRM = ["stage", "follow_up"];
 export const extraCols = rows => [...new Set(rows.flatMap(r => Object.keys(r)).filter(k => !CORE.includes(k) && !STATUS.includes(k) && !CRM.includes(k) && k !== "id"))];
 
