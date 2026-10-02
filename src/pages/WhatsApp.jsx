@@ -21,6 +21,14 @@ function WhatsAppPage() {
   const [qrT, setQrT] = useState(Date.now());
   const polling = useRef(false);
   const pending = ["starting", "qr", "saving"].includes(w.state);
+  const hours = w.hours || 2;
+  const [now, setNow] = useState(Date.now());
+  useEffect(() => { const t = setInterval(() => setNow(Date.now()), 30000); return () => clearInterval(t); }, []);
+  const left = w.expires_at ? Math.max(0, new Date(w.expires_at).getTime() - now) : null;
+  const leftText = left === null ? "" : left < 60000 ? "less than a minute" : left < 3600000 ? `${Math.ceil(left / 60000)} min` : `${Math.floor(left / 3600000)} h ${Math.round((left % 3600000) / 60000)} min`;
+  useEffect(() => { // when it runs out, pick up the new state (the server removes it within a minute)
+    if (left === 0) { const t = setTimeout(async () => app.setWa(await api("/api/whatsapp").catch(() => app.wa)), 65000); return () => clearTimeout(t); }
+  }, [left === 0]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const poll = async () => {
     if (polling.current) return;
@@ -54,6 +62,7 @@ function WhatsAppPage() {
             {w.state === "connected" ? <>
               <motion.div className="wa-status on" initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring", stiffness: 260, damping: 14 }}><Icon name="check" /></motion.div>
               <h3>WhatsApp is linked</h3><p>Messages go out from your phone's WhatsApp.{w.linked_at ? ` Linked ${ago(w.linked_at)}.` : ""}</p>
+              {leftText && <Alert tone="warn" style={{ margin: "0 auto 16px", maxWidth: 380, textAlign: "left" }}>For your security this login is deleted automatically in <b>{leftText}</b>. You'll get a notification, and can link again anytime.</Alert>}
               <div className="form-actions" style={{ justifyContent: "center" }}><Button icon="refresh" busy={busy === "link"} onClick={link}>Re-link</Button><Button variant="danger" icon="x" busy={busy === "unlink"} onClick={unlink}>Unlink</Button></div>
             </> : pending ? <>
               <div className="qr">{w.state === "qr" ? <motion.img key={qrT} alt="WhatsApp QR code" src={`/api/whatsapp/qr?t=${qrT}`} initial={{ opacity: 0 }} animate={{ opacity: 1 }} /> : <Spinner size={28} />}</div>
@@ -62,7 +71,7 @@ function WhatsAppPage() {
               {w.state !== "saving" && <Button busy={busy === "cancel"} onClick={cancel}>Cancel</Button>}
             </> : <>
               <div className="wa-status off"><Icon name="phone" /></div>
-              <h3>WhatsApp isn't linked</h3><p>Link it once by scanning a QR code with your phone. You stay linked until you unlink it or log out from your phone.</p>
+              <h3>WhatsApp isn't linked</h3><p>Link it by scanning a QR code with your phone. For your security, the saved login is deleted automatically {hours} hours after linking. Link again whenever you need to send.</p>
               {w.error && <Alert tone="bad" style={{ margin: "0 auto 16px", maxWidth: 380, textAlign: "left" }}>{w.error}</Alert>}
               <Button variant="primary" size="lg" icon="link" busy={busy === "link"} busyLabel="Starting…" onClick={link}>Link WhatsApp</Button>
             </>}
@@ -73,7 +82,7 @@ function WhatsAppPage() {
         <h3 className="sec-h">How to link</h3>
         <ol className="howto"><li>Click <b>Link WhatsApp</b> and wait for the QR code.</li><li>On your phone open <b>WhatsApp → Settings → Linked devices</b>.</li><li>Tap <b>Link a device</b> and scan the code on this page.</li></ol>
         <Alert tone="warn" style={{ marginTop: 18 }}>WhatsApp doesn't officially allow automated messages. Keep batches small (about 20 a day), only contact relevant people, and use a number you can afford to have restricted.</Alert>
-        <p className="help" style={{ marginTop: 14 }}>Your WhatsApp login is stored encrypted.</p>
+        <p className="help" style={{ marginTop: 14 }}>Your WhatsApp login is stored encrypted and deleted automatically {hours} hours after you link it.</p>
       </div>
     </div>
   );
