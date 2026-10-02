@@ -21,6 +21,7 @@ function addressKind(r) {
   if (!r.email) return "none";
   if (r.email_type === "careers") return "hiring";
   if (r.email_type === "general") return "general";
+  if (r.email_type === "referral") return "person";
   const local = r.email.split("@")[0];
   return HIRING.test(local) ? "hiring" : GENERAL.test(local) ? "general" : "person";
 }
@@ -147,7 +148,7 @@ export default function Contacts() {
           <option value="">Any address</option>
           <option value="hiring">Careers / HR address</option>
           <option value="general">General address (info@, contact@…)</option>
-          <option value="person">A person's address</option>
+          <option value="person">A person (referral)</option>
           <option value="none">No email</option>
         </select>
         {filtered && <Button variant="ghost" size="sm" icon="x" onClick={() => { setQ(""); setStatus(""); setStage(""); setAdded(""); setList(""); setKind(""); }}>Clear</Button>}
