@@ -514,6 +514,13 @@ function ApplyDrawer({ open, onClose, d, me, onSaved }) {
             </Field>
           ))}
         </div>
+        <Field label="Cover letter" hint="Attached when a form has a cover letter field, or pasted where it asks for the letter as text. Forms without one never get it.">
+          <select className="select" value={v.cover_letter || "auto"} onChange={e => setV(x => ({ ...x, cover_letter: e.target.value }))}>
+            <option value="auto">{d?.cover_letter ? `Automatic: ${d.cover_letter}` : "Automatic (a file with “cover” in its name)"}</option>
+            {(d?.documents || []).map(n => <option key={n} value={n}>{n}</option>)}
+            <option value="none">Don't send a cover letter</option>
+          </select>
+        </Field>
         <Alert tone="warn" icon="shield">
           <b>How it works.</b> Only jobs you tick are applied to, at most {d?.apply_per_day || 20} a day, and only on public application forms
           (Greenhouse, Lever, Ashby). It never logs in to any site, never makes up answers, and stops at CAPTCHAs. Anything it can't

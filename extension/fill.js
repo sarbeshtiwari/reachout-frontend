@@ -82,22 +82,39 @@
   const groups = () => [...document.querySelectorAll("fieldset, [role=radiogroup]")].filter(shown);
   const groupLabel = g => clean((g.querySelector("legend, label, [class*=label]") || {}).innerText);
 
-  async function attachResume(status) {
-    const inputs = [...document.querySelectorAll("input[type=file]")];
-    const input = inputs.find(f => /resume|cv/i.test(`${f.name} ${f.id} ${f.getAttribute("aria-label")} ${labelOf(f)}`)) ||
-      inputs.find(f => !/cover/i.test(`${f.name} ${f.id} ${labelOf(f)}`));
-    if (!input || input.files.length) return false;
-    status("Attaching your resume…");
-    const r = await api({ path: "/api/ext/resume" });
+  const fileLabel = f => `${f.name} ${f.id} ${f.getAttribute("aria-label") || ""} ${labelOf(f)}`;
+
+  async function attach(input, path) {
+    const r = await api({ path });
     const bytes = Uint8Array.from(atob(r.base64), c => c.charCodeAt(0));
     const dt = new DataTransfer();
-    dt.items.add(new File([bytes], r.name, { type: "application/pdf" }));
+    dt.items.add(new File([bytes], r.name, { type: /\.pdf$/i.test(r.name) ? "application/pdf" : "application/octet-stream" }));
     input.files = dt.files;
     input.dispatchEvent(new Event("input", { bubbles: true }));
     input.dispatchEvent(new Event("change", { bubbles: true }));
     outline(input, GREEN);
+    return true;
+  }
+
+  async function attachResume(status) {
+    const inputs = [...document.querySelectorAll("input[type=file]")];
+    const input = inputs.find(f => /resume|cv/i.test(fileLabel(f))) || inputs.find(f => !/cover/i.test(fileLabel(f)));
+    if (!input || input.files.length) return false;
+    status("Attaching your resume…");
+    await attach(input, "/api/ext/resume");
     await sleep(2500); // some forms read the resume and refill fields
     return true;
+  }
+
+  // The form's cover letter field, if it has one: attach your letter, or paste its text where it asks for text.
+  async function addCover(cover, status) {
+    if (!cover) return "";
+    const input = [...document.querySelectorAll("input[type=file]")].find(f => /cover/i.test(fileLabel(f)) && !f.files.length);
+    if (input) { status("Attaching your cover letter…"); await attach(input, "/api/ext/cover"); return "attached"; }
+    const box = textBoxes().find(e => e.tagName === "TEXTAREA" && !e.value &&
+      /^(your |a )?cover letter( \(optional\))?$|^message to (the )?hiring (team|manager)$/i.test(labelOf(e)));
+    if (box && cover.text) { setValue(box, cover.text); outline(box, GREEN); return "pasted"; }
+    return "";
   }
 
   function bar(text) {
@@ -128,6 +145,7 @@
     questions.delete("");
     const data = await api({ path: "/api/ext/autofill", method: "POST", body: { url: location.href, title: document.title, questions: [...questions] } });
     result.company = data.company;
+    result.cover = await addCover(data.cover, bar).catch(() => "");
     const f = data.fields;
     const map = data.field_map.map(([pat, key]) => [new RegExp(pat.replace(/\\\\/g, "\\")), key]);
     const contactKey = label => {
@@ -203,7 +221,8 @@
     });
     const first = document.querySelector(`[style*="${RED}"]`) || document.querySelector(`[style*="${AMBER}"]`);
     if (first) first.scrollIntoView({ behavior: "smooth", block: "center" });
-    const parts = [`filled ${result.filled + (result.resume ? 1 : 0)} details`, `${result.answered} saved answer${result.answered === 1 ? "" : "s"}`];
+    if (result.cover) result.filled++;
+    const parts = [`filled ${result.filled + (result.resume ? 1 : 0)} details${result.cover ? ` (cover letter ${result.cover})` : ""}`, `${result.answered} saved answer${result.answered === 1 ? "" : "s"}`];
     if (result.drafts) parts.push(`${result.drafts} draft${result.drafts === 1 ? "" : "s"} (amber: check them)`);
     bar(parts.join(", ") + ". " + (result.missing.length ? `${result.missing.length} question${result.missing.length === 1 ? "" : "s"} need you (red).` : "") +
       " Check the form, then press Submit yourself.");

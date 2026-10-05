@@ -36,6 +36,7 @@ $("fill").onclick = async () => {
     const r = await inPage("fill", { drafts: $("drafts").checked });
     out.innerHTML = `<div class="ok">Filled ${r.filled + (r.resume ? 1 : 0)} details and ${r.answered} saved answer${r.answered === 1 ? "" : "s"}` +
       `${r.drafts ? `, ${r.drafts} draft${r.drafts === 1 ? "" : "s"}` : ""}${r.company ? ` for ${esc(r.company)}` : ""}.</div>` +
+      (r.cover ? `<div>Cover letter ${r.cover}.</div>` : "") +
       (r.resumeError ? `<div class="bad">Resume: ${esc(r.resumeError)}</div>` : "") +
       (r.missing.length ? `<div class="bad">${r.missing.length} need you (outlined red):</div><ul>${r.missing.slice(0, 8).map(m => `<li>${esc(m)}</li>`).join("")}</ul>`
         : "<div>Nothing left. Check the form and press Submit.</div>");

@@ -23,7 +23,7 @@ async function call(path, { method = "GET", body } = {}) {
     throw new Error(server.includes("127.0.0.1") || server.includes("localhost")
       ? "Can't reach Reachout on this Mac. Start it with start.command." : "Can't reach Reachout. Check your connection.");
   }
-  if (path === "/api/ext/resume" && r.ok) {
+  if ((path === "/api/ext/resume" || path === "/api/ext/cover") && r.ok) {
     const buf = new Uint8Array(await r.arrayBuffer());
     let bin = "";
     for (let i = 0; i < buf.length; i += 0x8000) bin += String.fromCharCode(...buf.subarray(i, i + 0x8000));
