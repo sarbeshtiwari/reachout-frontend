@@ -292,6 +292,12 @@ function ExtensionDrawer({ open, onClose }) {
     try { const r = await api("/api/extension/key", { json: {} }); setKey(r.key); setSt(x => ({ ...x, has_key: true })); } catch (e) { fail(e); }
     setBusy(false);
   };
+  const [installed, setInstalled] = useState("");
+  const install = async () => {
+    setBusy(true);
+    try { const r = await api("/api/extension/install", { json: {} }); setInstalled(r.folder); toast("Unpacked into Documents. Finder is showing the folder."); } catch (e) { fail(e); }
+    setBusy(false);
+  };
   const revoke = async () => { await api("/api/extension/key", { method: "DELETE" }).catch(fail); setKey(""); setSt(x => ({ ...x, has_key: false })); toast("Key revoked. The extension can't reach your account any more."); };
   const copy = async () => { try { await navigator.clipboard.writeText(key); toast("Key copied"); } catch { toast("Select the key and copy it.", true); } };
   return (
@@ -305,10 +311,17 @@ function ExtensionDrawer({ open, onClose }) {
         </div>
         <h4 className="sec-h" style={{ margin: 0 }}>Set it up (about 2 minutes, once)</h4>
         <ol className="ai-ext-steps">
-          <li><a className="btn btn-sm btn-primary" href="/downloads/reachout-autofill.zip" download><Icon name="download" />Download the extension</a> and double-click the zip to unzip it.
-            Move the folder somewhere it can stay, like Documents (Chrome loads it from there).</li>
+          {st?.can_install ? (
+            <li><Button size="sm" variant="primary" icon="folder" busy={busy} onClick={install}>Get the unpacked folder</Button> puts the extension, already unpacked, in
+              <code>{st.folder}</code> and opens it in Finder. Leave it there: Chrome loads it from that folder.
+              {installed && <div className="help" style={{ marginTop: 6 }}>✓ Ready in {installed}</div>}
+              <div className="help" style={{ marginTop: 6 }}>Or <a className="link" href="/downloads/reachout-autofill.zip" download>download the zip</a> and double-click it to unzip.</div></li>
+          ) : (
+            <li><a className="btn btn-sm btn-primary" href="/downloads/reachout-autofill.zip" download><Icon name="download" />Download the extension</a> and double-click the zip
+              to unpack it (browsers can only download files, so the folder comes zipped). Move the folder somewhere it can stay, like Documents.</li>
+          )}
           <li>In Chrome, open <code>chrome://extensions</code> (type it in the address bar) and turn on <b>Developer mode</b> (top right).</li>
-          <li>Click <b>Load unpacked</b> and pick the <b>reachout-autofill</b> folder. Pin it from the puzzle-piece icon so it's always in your toolbar.</li>
+          <li>Click <b>Load unpacked</b> and pick the <b>{st?.can_install ? "Reachout Autofill" : "unzipped"}</b> folder (tip: <b>Cmd + Shift + G</b> lets you paste its path). Pin it from the puzzle-piece icon so it's always in your toolbar.</li>
           <li>Create your extension key below, click the extension, choose <b>On this Mac</b> (or <b>Online</b> if you use the website), paste the key and press <b>Connect</b>.</li>
         </ol>
         <div className="ai-answer">
