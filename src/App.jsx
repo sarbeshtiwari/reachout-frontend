@@ -28,6 +28,7 @@ const P = {
   settings: lazy(() => import("./pages/Settings")),
   leads: lazy(() => import("./pages/Leads")),
   finder: lazy(() => import("./pages/Finder")),
+  "ai-jobs": lazy(() => import("./pages/AIJobs")),
 };
 export const TITLES = {
   dashboard: ["Dashboard", ""],
@@ -49,6 +50,7 @@ export const TITLES = {
   whatsapp: ["WhatsApp", "Link your WhatsApp once. Messages are sent from your own number."],
   profile: ["Profile & email", "Your details, the email account messages are sent from, and Gmail sync."],
   settings: ["Settings", ""],
+  "ai-jobs": ["AI job match", "Tell Reachout AI what you want. It reads your resume, searches for openings, ranks every match and can apply for you."],
   finder: ["Email finder", "Find the HR and careers email addresses that companies publish on their websites, then save them as contacts."],
   leads: ["Leads", "Enquiries from the contact form on your website. Reply, add notes and track each one."],
 };

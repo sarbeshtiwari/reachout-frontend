@@ -15,7 +15,7 @@ export const NAV = [
   { key: "main", group: null, items: [["dashboard", "Dashboard", "home"], ["activity", "Activity", "activity"]] },
   { key: "outreach", group: "Outreach", icon: "send", items: [["contacts", "Contacts", "users", "contacts"], ["finder", "Email finder", "search"], ["replies", "Replies", "reply", "replies"],
     ["templates", "Templates", "message"], ["files", "Files", "file"], ["inbox", "Inbox insights", "inbox"]] },
-  { key: "career", group: "Career", icon: "briefcase", items: [["applications", "Applications", "briefcase", "apps"], ["jobs", "Job matches", "zap", "jobs"], ["posts", "Hiring posts", "message", "queue"]] },
+  { key: "career", group: "Career", icon: "briefcase", items: [["ai-jobs", "AI job match", "sparkles", null, "ai"], ["applications", "Applications", "briefcase", "apps"], ["jobs", "Job matches", "zap", "jobs"], ["posts", "Hiring posts", "message", "queue"]] },
   { key: "website", group: "My website", icon: "globe", items: [["portfolio", "Website & portfolio", "star"], ["leads", "Leads", "inbox", "leads"]] },
 ];
 const HOT = ["replies", "apps", "jobs", "leads"]; // counts that mean “new, look at this”
@@ -137,14 +137,15 @@ function Sidebar({ active, counts, collapsed, mobileOpen, toggle, openPalette })
                 <AnimatePresence initial={false}>
                   {(!isClosed || hasActive) && (
                     <motion.div className="nav-items" initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: .2, ease: [.2, .8, .2, 1] }}>
-                      {g.items.filter(([id]) => !isClosed || id === active).map(([id, label, ic, countKey]) => {
+                      {g.items.filter(([id]) => !isClosed || id === active).map(([id, label, ic, countKey, mark]) => {
                         const n = countKey ? counts[countKey] || 0 : 0;
                         const isHot = HOT.includes(countKey);
                         return (
                           <a key={id} href={`/app/${id}`} className={active === id ? "active" : ""} aria-current={active === id ? "page" : undefined} {...tipProps(label, n ? `${n}${isHot ? " new" : ""}` : "")}>
                             {active === id && <motion.span className="nav-bg" layoutId="nav-active" transition={spring} />}
-                            <span className="nav-ic"><Icon name={ic} />{n > 0 && isHot && <span className="ic-dot" />}</span>
+                            <span className={`nav-ic ${mark === "ai" ? "ai-ic" : ""}`}><Icon name={ic} />{n > 0 && isHot && <span className="ic-dot" />}</span>
                             <span className="nav-text">{label}</span>
+                            {mark === "ai" && <span className="ai-mark nav-text" aria-label="AI feature">AI</span>}
                             {n > 0 && <motion.span key={n} className={`count nav-text ${isHot ? "new" : ""}`} initial={{ scale: .6 }} animate={{ scale: 1 }}>{n > 999 ? "999+" : n}</motion.span>}
                           </a>
                         );
