@@ -21,10 +21,10 @@ The app has no server of its own. Netlify serves the built files and forwards `/
 | Area | Pages |
 |---|---|
 | Overview | **Dashboard** (KPIs, charts, filters), **Activity** (every message sent, by day) |
-| Outreach | **Contacts** (import Excel/CSV, stages, notes), **Replies** (detected replies + suggested answers), **Templates**, **Files**, **Inbox insights** (emails by company) |
-| Career | **Applications** (timelines from your inbox), **Job matches** (scored alerts), **Hiring posts** (scheduled emails) |
+| Outreach | **Contacts** (import Excel/CSV, stages, notes), **Email finder** (HR/careers addresses from company websites → contacts), **Replies** (detected replies + suggested answers), **Templates**, **Files**, **Inbox insights** (emails by company) |
+| Career | **AI job match** (marked AI: resume-based search, ranked matches with reasons, auto-apply), **Applications** (timelines from your inbox), **Job matches** (scored alerts), **Hiring posts** (scheduled emails) |
 | My website | **Website & portfolio** (builder with live preview, projects from GitHub), **Leads** (contact-form messages) |
-| Connected | **GitHub** (repos, editor, PRs), **LinkedIn**, **Naukri**, **WhatsApp** (hidden when the server disables it) |
+| Connected | **GitHub** (repos, editor, PRs), **LinkedIn**, **Naukri**, **WhatsApp** (hidden when the server disables it; login deleted 2 hours after linking, with a countdown) |
 | Account | **Profile & email**, **Settings** (theme, notifications, delete account) |
 
 Also: a 5-step **campaign** wizard with a live preview, a **⌘K** command palette, live notifications
