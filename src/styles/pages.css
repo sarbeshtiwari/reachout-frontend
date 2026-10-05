@@ -1025,3 +1025,8 @@ a.kpi:hover { border-color: var(--border-strong); box-shadow: var(--shadow-md); 
 .ai-answer-q { font-weight: 600; }
 .ai-answer-foot { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
 .ai-answer-co { max-width: 200px; }
+.ai-kit { display: grid; gap: 2px; border: 1px solid var(--border); border-radius: var(--r); padding: 4px 12px; }
+.ai-kit-row { display: grid; grid-template-columns: 130px minmax(0, 1fr) auto; align-items: center; gap: 10px; padding: 6px 0; border-bottom: 1px solid var(--border); }
+.ai-kit-row:last-child { border-bottom: 0; }
+.ai-kit-row b { font-weight: 600; overflow-wrap: anywhere; }
+.ai-kit-answer { margin: 0; white-space: pre-wrap; font-size: 13.5px; line-height: 1.5; color: var(--text-2); }
