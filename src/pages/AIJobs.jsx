@@ -26,7 +26,7 @@ export default function AIJobs() {
   const [keysOpen, setKeysOpen] = useState(false);
   const [applyOpen, setApplyOpen] = useState(false);
   const [minScore, setMinScore] = useState(0);
-  const [watchWindow, setWatchWindow] = useState(false);
+  const [watchWindow, setWatchWindow] = useState(true);
   const timer = useRef(null);
 
   const load = async () => {
@@ -69,7 +69,9 @@ export default function AIJobs() {
     if (!d.consent) { setApplyOpen(true); return; }
     const ids = [...picked];
     if (!await modal({ title: `Apply to ${ids.length} job${ids.length === 1 ? "" : "s"}?`, confirm: "Apply now",
-      text: "Reachout AI fills each public application form with your resume and details and submits it. Forms with questions only you can answer, or a CAPTCHA, are handed back to you. You can watch it live on this page." })) return;
+      text: watchWindow && d.can_hand_over
+        ? "A browser window opens and each job gets its own tab: Reachout AI fills the form and submits it. Where you're needed (signing in, creating an account, a question only you can answer, a CAPTCHA) it pauses with a bar at the bottom of the page; do that part, then press Continue."
+        : "Reachout AI fills each public application form with your resume and details and submits it. Forms with questions only you can answer, or a CAPTCHA, are handed back to you. You can watch it live on this page." })) return;
     setBusy("apply");
     try { await api("/api/ai-jobs/apply", { json: { ids, watch: watchWindow } }); setPicked(new Set()); toast("Applying… watch it live below."); load(); }
     catch (x) { x.field === "consent" || x.field === "phone" ? (x.field === "phone" ? (toast(x.message, true), go("profile")) : setApplyOpen(true)) : fail(x); }
@@ -78,7 +80,7 @@ export default function AIJobs() {
 
   const finish = async r => {
     setBusy("finish:" + r.id);
-    try { await api(`/api/ai-jobs/finish/${encodeURIComponent(r.id)}`, { json: {} }); toast("Opening the form in a browser window on your computer…"); load(); }
+    try { await api(`/api/ai-jobs/finish/${encodeURIComponent(r.id)}`, { json: {} }); toast("Opening a browser window… answer what it asks, then press Continue in the page."); load(); }
     catch (x) { x.field === "consent" ? setApplyOpen(true) : fail(x); }
     setBusy("");
   };
@@ -161,7 +163,7 @@ export default function AIJobs() {
             <select className="select auto" value={minScore} onChange={e => setMinScore(+e.target.value)} aria-label="Minimum match">
               <option value={0}>All matches</option><option value={50}>50%+ match</option><option value={65}>65%+ match</option><option value={80}>80%+ match</option>
             </select>
-            {d.can_hand_over && <Check checked={watchWindow} onChange={setWatchWindow}>Show the browser window</Check>}
+            {d.can_hand_over && <Check checked={watchWindow} onChange={setWatchWindow}>Watch it in a browser window</Check>}
             <Button variant="primary" icon="send" busy={busy === "apply"} disabled={!picked.size || d.applying?.state === "running"} onClick={applyNow}>
               Auto-apply{picked.size ? ` (${picked.size})` : ""}
             </Button>
@@ -196,7 +198,7 @@ export default function AIJobs() {
                     <span className="grow" />
                     {r.can_apply && d.can_hand_over && ["needs_you", "ready", undefined].includes(r.apply?.state) && (
                       <Button size="sm" variant="primary" icon="sparkles" busy={busy === "finish:" + r.id} disabled={!!d.handover}
-                        title="Fills the form in a browser window on this computer and leaves it open for you to finish and submit" onClick={() => finish(r)}>Fill &amp; finish</Button>)}
+                        title="Opens the form in a browser window on this computer, fills it, and waits for you to answer the rest; press Continue in the page and it submits" onClick={() => finish(r)}>Fill &amp; finish</Button>)}
                     <a className="btn btn-sm" href={r.apply?.url || r.url} target="_blank" rel="noopener noreferrer"
                       title={r.apply?.state === "needs_you" && !d.can_hand_over ? "Opens a fresh copy of the form; answers filled on the server don't carry over" : undefined}>
                       {r.apply?.state === "needs_you" ? (d.can_hand_over ? "Open blank form" : "Open the form") : "View job"}<Icon name="link" /></a>
