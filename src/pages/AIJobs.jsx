@@ -11,7 +11,7 @@ const SOURCES = [
   ["brave", "Brave web search", "Independent web search. Free key: 2,000 searches a month.", "https://api-dashboard.search.brave.com"],
 ];
 const STEPS = ["Reading your resume", "Searching", "Ranking matches", "Done"];
-const APPLY = { applied: ["Applied", "ok"], needs_you: ["Needs you", "warn"], closed: ["Closed", ""], ready: ["Ready", "brand"] };
+const APPLY = { applied: ["Applied", "ok"], needs_you: ["Needs you", "warn"], closed: ["Closed", ""], ready: ["Ready", "brand"], with_you: ["Open on your screen", "brand"] };
 const tone = s => (s >= 80 ? "great" : s >= 65 ? "good" : s >= 50 ? "fair" : "low");
 
 export default function AIJobs() {
@@ -26,6 +26,7 @@ export default function AIJobs() {
   const [keysOpen, setKeysOpen] = useState(false);
   const [applyOpen, setApplyOpen] = useState(false);
   const [minScore, setMinScore] = useState(0);
+  const [watchWindow, setWatchWindow] = useState(false);
   const timer = useRef(null);
 
   const load = async () => {
@@ -35,7 +36,7 @@ export default function AIJobs() {
       setF(x => ({ ...x, resume: x.resume || r.resumes.find(n => !/cover/i.test(n)) || r.resumes[0] || "",
                    ...(r.want && !x.role ? { role: r.want.role, years: String(r.want.years ?? ""), company: r.want.company || "", location: r.want.location || "" } : {}) }));
       clearTimeout(timer.current);
-      if (r.state === "running" || r.applying?.state === "running") timer.current = setTimeout(load, 1800);
+      if (r.state === "running" || r.applying?.state === "running" || r.handover) timer.current = setTimeout(load, 1800);
     } catch (e) { fail(e); }
   };
   useEffect(() => { load(); return () => clearTimeout(timer.current); }, []); // eslint-disable-line react-hooks/exhaustive-deps
@@ -68,13 +69,19 @@ export default function AIJobs() {
     if (!d.consent) { setApplyOpen(true); return; }
     const ids = [...picked];
     if (!await modal({ title: `Apply to ${ids.length} job${ids.length === 1 ? "" : "s"}?`, confirm: "Apply now",
-      text: "Reachout AI fills each public application form with your resume and details and submits it. Forms with questions only you can answer, or a CAPTCHA, are handed back to you." })) return;
+      text: "Reachout AI fills each public application form with your resume and details and submits it. Forms with questions only you can answer, or a CAPTCHA, are handed back to you. You can watch it live on this page." })) return;
     setBusy("apply");
-    try { await api("/api/ai-jobs/apply", { json: { ids } }); setPicked(new Set()); toast("Applying… you can leave this page."); load(); }
+    try { await api("/api/ai-jobs/apply", { json: { ids, watch: watchWindow } }); setPicked(new Set()); toast("Applying… watch it live below."); load(); }
     catch (x) { x.field === "consent" || x.field === "phone" ? (x.field === "phone" ? (toast(x.message, true), go("profile")) : setApplyOpen(true)) : fail(x); }
     setBusy("");
   };
 
+  const finish = async r => {
+    setBusy("finish:" + r.id);
+    try { await api(`/api/ai-jobs/finish/${encodeURIComponent(r.id)}`, { json: {} }); toast("Opening the form in a browser window on your computer…"); load(); }
+    catch (x) { x.field === "consent" ? setApplyOpen(true) : fail(x); }
+    setBusy("");
+  };
   const stage = STEPS.indexOf(d?.stage);
   return (
     <div className="ai-page">
@@ -138,6 +145,8 @@ export default function AIJobs() {
         <Alert tone="info" icon="sparkles">Applying… {d.applying.done} of {d.applying.total}{d.applying.current ? `: ${d.applying.current}` : ""}</Alert>
       )}
 
+      <LiveView active={d?.applying?.state === "running" || !!d?.handover} />
+
       {d?.state === "error" && <Alert tone="bad">{d.error}</Alert>}
       {d?.errors?.length > 0 && <Alert tone="warn">Some sources didn't answer: {d.errors.join(" · ")}</Alert>}
 
@@ -152,6 +161,7 @@ export default function AIJobs() {
             <select className="select auto" value={minScore} onChange={e => setMinScore(+e.target.value)} aria-label="Minimum match">
               <option value={0}>All matches</option><option value={50}>50%+ match</option><option value={65}>65%+ match</option><option value={80}>80%+ match</option>
             </select>
+            {d.can_hand_over && <Check checked={watchWindow} onChange={setWatchWindow}>Show the browser window</Check>}
             <Button variant="primary" icon="send" busy={busy === "apply"} disabled={!picked.size || d.applying?.state === "running"} onClick={applyNow}>
               Auto-apply{picked.size ? ` (${picked.size})` : ""}
             </Button>
@@ -179,9 +189,17 @@ export default function AIJobs() {
                   <div className="ai-job-foot">
                     {r.apply ? <Badge tone={APPLY[r.apply.state]?.[1]} title={r.apply.detail}>{APPLY[r.apply.state]?.[0]}</Badge>
                       : r.can_apply ? <Badge tone="brand" dot={false}>Auto-apply ready</Badge> : <Badge dot={false}>Apply on site</Badge>}
-                    {r.apply?.state === "needs_you" && <span className="help ai-detail">{r.apply.detail}</span>}
+                    {["needs_you", "with_you"].includes(r.apply?.state) && <span className="help ai-detail">{r.apply.detail}</span>}
+                    {r.apply?.questions?.length > 0 && r.apply.state !== "applied" && (
+                      <details className="ai-questions"><summary>{r.apply.questions.length} question{r.apply.questions.length === 1 ? "" : "s"} for you</summary>
+                        <ul>{r.apply.questions.map(q => <li key={q}>{q}</li>)}</ul></details>)}
                     <span className="grow" />
-                    <a className="btn btn-sm" href={r.apply?.url || r.url} target="_blank" rel="noopener noreferrer">{r.apply?.state === "needs_you" ? "Finish on site" : "View job"}<Icon name="link" /></a>
+                    {r.can_apply && d.can_hand_over && ["needs_you", "ready", undefined].includes(r.apply?.state) && (
+                      <Button size="sm" variant="primary" icon="sparkles" busy={busy === "finish:" + r.id} disabled={!!d.handover}
+                        title="Fills the form in a browser window on this computer and leaves it open for you to finish and submit" onClick={() => finish(r)}>Fill &amp; finish</Button>)}
+                    <a className="btn btn-sm" href={r.apply?.url || r.url} target="_blank" rel="noopener noreferrer"
+                      title={r.apply?.state === "needs_you" && !d.can_hand_over ? "Opens a fresh copy of the form; answers filled on the server don't carry over" : undefined}>
+                      {r.apply?.state === "needs_you" ? (d.can_hand_over ? "Open blank form" : "Open the form") : "View job"}<Icon name="link" /></a>
                   </div>
                 </motion.article>
               ))}
@@ -201,6 +219,30 @@ export default function AIJobs() {
 
       <KeysDrawer open={keysOpen} onClose={() => setKeysOpen(false)} keys={d?.keys || {}} onSaved={k => { setD(x => ({ ...x, keys: k })); }} />
       <ApplyDrawer open={applyOpen} onClose={() => setApplyOpen(false)} d={d} me={app.data.profile} onSaved={r => setD(x => ({ ...x, details: r.details, consent: r.consent }))} />
+    </div>
+  );
+}
+
+function LiveView({ active }) {
+  const [v, setV] = useState(null);
+  useEffect(() => {
+    let stop = false, t;
+    const tick = async () => {
+      try { const r = await api("/api/ai-jobs/live"); if (!stop) setV(r.active ? r : null); } catch { /* keep the last frame */ }
+      if (!stop) t = setTimeout(tick, active ? 900 : 4000);
+    };
+    tick();
+    return () => { stop = true; clearTimeout(t); };
+  }, [active]);
+  if (!v?.active && !active) return null;
+  if (!v?.job) return null;
+  return (
+    <div className="card ai-live">
+      <div className="ai-live-head"><span className="ai-live-dot" />Live: {v.job}</div>
+      <div className="ai-live-body">
+        <div className="ai-live-screen">{v.frame ? <img src={v.frame} alt="What the application browser shows right now" /> : <div className="help">Starting the browser…</div>}</div>
+        <ol className="ai-live-log">{v.log.map((l, i) => <li key={i} className={i === v.log.length - 1 ? "now" : ""}>{l}</li>)}</ol>
+      </div>
     </div>
   );
 }
