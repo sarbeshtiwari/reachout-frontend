@@ -1030,3 +1030,9 @@ a.kpi:hover { border-color: var(--border-strong); box-shadow: var(--shadow-md); 
 .ai-kit-row:last-child { border-bottom: 0; }
 .ai-kit-row b { font-weight: 600; overflow-wrap: anywhere; }
 .ai-kit-answer { margin: 0; white-space: pre-wrap; font-size: 13.5px; line-height: 1.5; color: var(--text-2); }
+.ai-ext-what { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.ai-ext-what > div { display: grid; gap: 3px; padding: 12px; border: 1px solid var(--border); border-radius: var(--r); }
+.ai-ext-what .i { width: 18px; height: 18px; color: var(--violet); }
+.ai-ext-steps { margin: 0; padding-left: 20px; display: grid; gap: 10px; font-size: 13.5px; line-height: 1.55; }
+.ai-ext-steps code { font-family: var(--mono); font-size: 12px; padding: 1px 5px; border-radius: 4px; background: var(--muted); }
+@media (max-width: 600px) { .ai-ext-what { grid-template-columns: 1fr; } }

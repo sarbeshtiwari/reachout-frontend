@@ -42,6 +42,7 @@ index.html                 Page shell (title/robots placeholders filled at build
 public/                    Copied as-is: icons, sw.js (push notifications service worker)
 scripts/netlify-postbuild.mjs  Turns the build into a Netlify site: login/signup pages, _headers (CSP), _redirects
 netlify.toml               Netlify build + signed proxy rules to the backend
+extension/                 Reachout Autofill Chrome extension (zipped into public/downloads/)
 src/
   main.jsx                 Entry: loads saved preferences, picks Auth or App, reports browser errors
   App.jsx                  Page registry (lazy-loaded), titles, page transitions

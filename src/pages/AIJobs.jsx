@@ -28,6 +28,7 @@ export default function AIJobs() {
   const [minScore, setMinScore] = useState(0);
   const [watchWindow, setWatchWindow] = useState(true);
   const [kitFor, setKitFor] = useState(null);
+  const [extOpen, setExtOpen] = useState(false);
   const [answersOpen, setAnswersOpen] = useState(null); // null = closed; {} = open; {question, company} = open with a new answer
   const [answers, setAnswers] = useState([]);
   const loadAnswers = () => api("/api/ai-jobs/answers").then(r => setAnswers(r.answers)).catch(() => {});
@@ -128,6 +129,7 @@ export default function AIJobs() {
             </button>
           ))}
           <Button variant="ghost" size="sm" icon="settings" onClick={() => setKeysOpen(true)}>Search keys</Button>
+          <Button variant="ghost" size="sm" icon="puzzle" onClick={() => setExtOpen(true)}>Browser extension</Button>
           <Button variant="ghost" size="sm" icon="note" onClick={() => { loadAnswers(); setAnswersOpen({}); }}>
             My answers{answers.length ? ` (${answers.length})` : ""}{toReview > 0 && <span className="ai-review-dot">{toReview} to review</span>}
           </Button>
@@ -231,6 +233,7 @@ export default function AIJobs() {
         </div>
       )}
 
+      <ExtensionDrawer open={extOpen} onClose={() => setExtOpen(false)} />
       <KitDrawer job={kitFor} onClose={() => setKitFor(null)} onAnswers={q => { setKitFor(null); setAnswersOpen(q); }} />
       <AnswersDrawer open={answersOpen} onClose={() => setAnswersOpen(null)} answers={answers} reload={loadAnswers} />
       <KeysDrawer open={keysOpen} onClose={() => setKeysOpen(false)} keys={d?.keys || {}} onSaved={k => { setD(x => ({ ...x, keys: k })); }} />
@@ -278,6 +281,59 @@ const KEY_STEPS = {
   ],
 };
 
+function ExtensionDrawer({ open, onClose }) {
+  const [st, setSt] = useState(null);
+  const [key, setKey] = useState("");
+  const [busy, setBusy] = useState(false);
+  useEffect(() => { if (open) { setKey(""); api("/api/extension").then(setSt).catch(fail); } }, [open]);
+  const create = async () => {
+    if (st?.has_key && !await modal({ title: "Create a new key?", text: "The extension stops working with the old key until you paste the new one.", confirm: "Create new key" })) return;
+    setBusy(true);
+    try { const r = await api("/api/extension/key", { json: {} }); setKey(r.key); setSt(x => ({ ...x, has_key: true })); } catch (e) { fail(e); }
+    setBusy(false);
+  };
+  const revoke = async () => { await api("/api/extension/key", { method: "DELETE" }).catch(fail); setKey(""); setSt(x => ({ ...x, has_key: false })); toast("Key revoked. The extension can't reach your account any more."); };
+  const copy = async () => { try { await navigator.clipboard.writeText(key); toast("Key copied"); } catch { toast("Select the key and copy it.", true); } };
+  return (
+    <Drawer open={open} onClose={onClose} label="Browser extension" wide>
+      <DrawerHead title="Reachout Autofill" sub="A Chrome extension that fills job applications in your own browser. You check the form and press Submit." onClose={onClose} />
+      <div className="dr-pad ai-drawer">
+        <div className="ai-ext-what">
+          {[["sparkles", "Fills it for you", "Your details, resume, location and approved answers, in one click."], ["shield", "In your browser", "No robot: it's your browser and your Submit, so sites accept it."],
+            ["note", "Learns with you", "“Save my answers” sends what you typed to My answers for your approval."]].map(([ic, t, d]) => (
+            <div key={t}><Icon name={ic} /><b>{t}</b><span className="help">{d}</span></div>))}
+        </div>
+        <h4 className="sec-h" style={{ margin: 0 }}>Set it up (about 2 minutes, once)</h4>
+        <ol className="ai-ext-steps">
+          <li><a className="btn btn-sm btn-primary" href="/downloads/reachout-autofill.zip" download><Icon name="download" />Download the extension</a> and double-click the zip to unzip it.
+            Move the folder somewhere it can stay, like Documents (Chrome loads it from there).</li>
+          <li>In Chrome, open <code>chrome://extensions</code> (type it in the address bar) and turn on <b>Developer mode</b> (top right).</li>
+          <li>Click <b>Load unpacked</b> and pick the <b>reachout-autofill</b> folder. Pin it from the puzzle-piece icon so it's always in your toolbar.</li>
+          <li>Create your extension key below, click the extension, choose <b>On this Mac</b> (or <b>Online</b> if you use the website), paste the key and press <b>Connect</b>.</li>
+        </ol>
+        <div className="ai-answer">
+          <div className="ai-answer-head"><b>Extension key</b>{st?.has_key ? <Badge tone="ok">Active</Badge> : <Badge>Not created</Badge>}
+            {st?.last_used > 0 && <span className="help">Last used {new Date(st.last_used * 1000).toLocaleString()}</span>}</div>
+          {key ? <>
+            <div className="ai-key-row"><input className="input mono" readOnly value={key} onFocus={e => e.target.select()} /><Button variant="primary" icon="copy" onClick={copy}>Copy</Button></div>
+            <span className="help">Shown once. Paste it into the extension now. It only lets the extension read your application details and save answers for your review.</span>
+          </> : <span className="help">The key connects the extension to your account. It can't send emails, change settings or see anything else.</span>}
+          <div className="ai-answer-foot"><span className="grow" />
+            {st?.has_key && <Button size="sm" variant="ghost" onClick={revoke}>Revoke</Button>}
+            <Button size="sm" variant={st?.has_key ? "" : "primary"} icon="plus" busy={busy} onClick={create}>{st?.has_key ? "Create a new key" : "Create key"}</Button></div>
+        </div>
+        <h4 className="sec-h" style={{ margin: 0 }}>Using it</h4>
+        <ol className="ai-ext-steps">
+          <li>Open a job application form (from a match: <b>Apply in my browser → Open the application form</b>).</li>
+          <li>Click <b>Reachout Autofill → Fill this application</b>. Filled fields turn green, unapproved drafts amber (only if you tick that option), and questions that need you red.</li>
+          <li>Answer the red ones, check everything, and press the site's <b>Submit</b> yourself.</li>
+          <li>Before submitting, click <b>Save my answers on this page</b> so Reachout can fill them next time, after you approve them in My answers.</li>
+        </ol>
+      </div>
+    </Drawer>
+  );
+}
+
 function KitDrawer({ job, onClose, onAnswers }) {
   const [k, setK] = useState(null);
   useEffect(() => { setK(null); if (job) api(`/api/ai-jobs/kit/${encodeURIComponent(job.id)}`).then(setK).catch(e => { fail(e); onClose(); }); }, [job]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -287,8 +343,8 @@ function KitDrawer({ job, onClose, onAnswers }) {
       <DrawerHead title="Apply in my browser" sub={job ? `${job.title} · ${job.company}` : ""} onClose={onClose} />
       <div className="dr-pad ai-drawer">
         {!k ? <p className="help">Loading…</p> : <>
-          <Alert tone="info" icon="shield">Some sites only accept applications from a person's own browser. Open the form in your browser, attach your resume
-            ({k.resume || "from Files"}), and copy each answer from here.</Alert>
+          <Alert tone="info" icon="shield">Some sites only accept applications from a person's own browser. Open the form in your browser and click
+            the <b>Reachout Autofill</b> extension to fill it in one go (set it up under “Browser extension”), or copy each answer from here.</Alert>
           <div className="form-actions" style={{ justifyContent: "flex-start" }}>
             <a className="btn btn-primary" href={k.apply_url} target="_blank" rel="noopener noreferrer"><Icon name="link" />Open the application form</a>
             <a className="btn" href="/app/files" target="_blank" rel="noopener noreferrer"><Icon name="file" />Download resume</a>

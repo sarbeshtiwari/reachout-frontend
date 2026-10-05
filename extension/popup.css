@@ -1,0 +1,25 @@
+:root { --accent: #0f6b54; --violet: #7a4b8f; --text: #1c1b19; --muted: #6b6760; --border: #e4e0d8; --bg: #fbfaf7; }
+@media (prefers-color-scheme: dark) { :root { --text: #eceae6; --muted: #a7a29a; --border: #34322e; --bg: #1a1916; --accent: #1e8c6a; } }
+* { box-sizing: border-box; }
+body { width: 320px; margin: 0; padding: 14px; font: 13.5px/1.45 -apple-system, system-ui, sans-serif; color: var(--text); background: var(--bg); }
+header { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; font-size: 15px; }
+header img { border-radius: 6px; }
+.ai { margin-left: auto; font-size: 10px; font-weight: 750; letter-spacing: .06em; padding: 2px 7px; border-radius: 6px; color: #fff; background: linear-gradient(120deg, var(--violet), var(--accent)); }
+section { display: grid; gap: 10px; }
+label { display: grid; gap: 4px; font-weight: 600; font-size: 12.5px; }
+input[type=password], select { width: 100%; padding: 8px 10px; border: 1px solid var(--border); border-radius: 8px; font: inherit; background: transparent; color: inherit; }
+button { padding: 9px 12px; border: 1px solid var(--border); border-radius: 9px; background: transparent; color: inherit; font: 600 13px system-ui; cursor: pointer; }
+button:hover { border-color: var(--accent); }
+button.primary { border: 0; color: #fff; background: linear-gradient(120deg, var(--violet), var(--accent)); }
+button.big { padding: 12px; font-size: 14px; }
+button:disabled { opacity: .6; cursor: default; }
+.check { display: flex; gap: 8px; align-items: flex-start; font-weight: 500; }
+.muted { color: var(--muted); margin: 0; }
+.small { font-size: 12px; }
+.msg { margin: 0; font-size: 12.5px; color: #c2410c; min-height: 1em; }
+.result { padding: 10px 12px; border: 1px solid var(--border); border-radius: 9px; font-size: 12.5px; }
+.result ul { margin: 6px 0 0; padding-left: 16px; }
+.result .ok { color: var(--accent); font-weight: 650; }
+.result .bad { color: #c2410c; }
+.foot { display: flex; justify-content: space-between; }
+a { color: var(--accent); font-size: 12.5px; }

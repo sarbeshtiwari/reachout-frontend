@@ -1,0 +1,15 @@
+{
+  "manifest_version": 3,
+  "name": "Reachout Autofill",
+  "version": "1.0.0",
+  "description": "Fills job applications in your own browser with your Reachout details, resume and approved answers. You check the form and press Submit.",
+  "icons": { "16": "icons/icon16.png", "32": "icons/icon32.png", "48": "icons/icon48.png", "128": "icons/icon128.png" },
+  "action": { "default_popup": "popup.html", "default_title": "Reachout Autofill", "default_icon": { "16": "icons/icon16.png", "32": "icons/icon32.png" } },
+  "background": { "service_worker": "background.js" },
+  "permissions": ["activeTab", "scripting", "storage"],
+  "host_permissions": [
+    "http://127.0.0.1:5050/*",
+    "http://localhost:5050/*",
+    "https://reachout-application.netlify.app/*"
+  ]
+}

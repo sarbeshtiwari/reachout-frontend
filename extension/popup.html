@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Reachout Autofill</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <header>
+    <img src="icons/icon32.png" alt="" width="22" height="22">
+    <b>Reachout Autofill</b>
+    <span class="ai">AI</span>
+  </header>
+
+  <section id="setup" hidden>
+    <p class="muted">Connect the extension to your Reachout account once.</p>
+    <label>Reachout
+      <select id="server">
+        <option value="http://127.0.0.1:5050">On this Mac (start.command)</option>
+        <option value="https://reachout-application.netlify.app">Online (reachout-application.netlify.app)</option>
+      </select>
+    </label>
+    <label>Extension key
+      <input id="key" type="password" autocomplete="off" placeholder="Paste the key from Reachout">
+    </label>
+    <p class="muted small">In Reachout: AI job match → Browser extension → Create key.</p>
+    <button id="save" class="primary">Connect</button>
+    <p id="setupMsg" class="msg"></p>
+  </section>
+
+  <section id="main" hidden>
+    <button id="fill" class="primary big">✦ Fill this application</button>
+    <label class="check"><input id="drafts" type="checkbox"> Also fill draft answers I haven't approved (shown in amber)</label>
+    <div id="result" class="result" hidden></div>
+    <button id="learn">Save my answers on this page to Reachout</button>
+    <p class="muted small">Reachout fills the form; you check it and press Submit yourself. Answers you save go to “My answers” for your approval.</p>
+    <div class="foot">
+      <a id="open" href="#" target="_blank">Open Reachout</a>
+      <a id="change" href="#">Change account</a>
+    </div>
+  </section>
+
+  <script src="popup.js"></script>
+</body>
+</html>
