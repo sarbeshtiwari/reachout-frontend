@@ -1015,3 +1015,13 @@ a.kpi:hover { border-color: var(--border-strong); box-shadow: var(--shadow-md); 
 .ai-steps-howto summary { cursor: pointer; font-weight: 600; }
 .ai-steps-howto ol { margin: 8px 0 10px; padding-left: 20px; display: grid; gap: 6px; color: var(--text-2); }
 .ai-steps-howto code { font-family: var(--mono); font-size: 12px; padding: 1px 4px; border-radius: 4px; background: var(--muted); }
+.ai-review-dot { margin-left: 6px; padding: 1px 7px; border-radius: 99px; font-size: 11px; font-weight: 700; color: #fff; background: var(--ai-grad); }
+.ai-save-q { margin-left: 6px; font-size: 12px; background: none; border: 0; padding: 0; cursor: pointer; color: var(--accent-text, var(--accent)); text-decoration: underline; }
+.ai-answer-new { display: grid; gap: 10px; }
+.ai-answer-new .field { margin: 0; }
+.ai-answer { display: grid; gap: 8px; padding: 12px; border: 1px solid var(--border); border-radius: var(--r); background: var(--surface); }
+.ai-answer.review { border-color: var(--warning-border); background: color-mix(in srgb, var(--warning-soft) 45%, var(--surface)); }
+.ai-answer-head { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.ai-answer-q { font-weight: 600; }
+.ai-answer-foot { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.ai-answer-co { max-width: 200px; }
