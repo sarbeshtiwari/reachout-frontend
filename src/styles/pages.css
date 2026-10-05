@@ -1011,3 +1011,7 @@ a.kpi:hover { border-color: var(--border-strong); box-shadow: var(--shadow-md); 
 .ai-questions summary { cursor: pointer; color: var(--text-3); }
 .ai-questions ul { margin: 6px 0 0; padding-left: 18px; display: grid; gap: 3px; color: var(--text-2); }
 @media (max-width: 800px) { .ai-live-body { grid-template-columns: 1fr; } }
+.ai-steps-howto { margin: 2px 0 10px; padding: 10px 12px; border: 1px solid var(--border); border-radius: var(--r); background: var(--surface-2); font-size: 13px; }
+.ai-steps-howto summary { cursor: pointer; font-weight: 600; }
+.ai-steps-howto ol { margin: 8px 0 10px; padding-left: 20px; display: grid; gap: 6px; color: var(--text-2); }
+.ai-steps-howto code { font-family: var(--mono); font-size: 12px; padding: 1px 4px; border-radius: 4px; background: var(--muted); }

@@ -7,8 +7,8 @@ import { Alert, Badge, Button, Check, Drawer, DrawerHead, Empty, Field, Icon, Sw
 
 const SOURCES = [
   ["career_sites", "Company career sites", "Greenhouse, Lever & Ashby job boards. No key needed.", null],
-  ["tavily", "Tavily web search", "Search engine built for AI agents. Free key: 1,000 searches a month.", "https://app.tavily.com"],
-  ["brave", "Brave web search", "Independent web search. Free key: 2,000 searches a month.", "https://api-dashboard.search.brave.com"],
+  ["tavily", "Tavily web search", "Search built for AI agents. Free: 1,000 searches a month, no card needed.", "https://app.tavily.com"],
+  ["brave", "Brave web search", "Independent web search. $5 free credit a month (about 1,000 searches); needs a card.", "https://api-dashboard.search.brave.com"],
 ];
 const STEPS = ["Reading your resume", "Searching", "Ranking matches", "Done"];
 const APPLY = { applied: ["Applied", "ok"], needs_you: ["Needs you", "warn"], closed: ["Closed", ""], ready: ["Ready", "brand"], with_you: ["Open on your screen", "brand"] };
@@ -249,6 +249,21 @@ function LiveView({ active }) {
   );
 }
 
+const KEY_STEPS = {
+  tavily: [
+    <>Open <a className="link" href="https://app.tavily.com" target="_blank" rel="noopener noreferrer">app.tavily.com</a> and sign up (Google, GitHub or email). No credit card is needed.</>,
+    <>Your dashboard opens with an API key already made. It starts with <code>tvly-</code>.</>,
+    <>Click the copy icon next to the key, paste it below and press <b>Save</b>.</>,
+    <>The free plan gives 1,000 searches a month; one Reachout search uses one or two.</>,
+  ],
+  brave: [
+    <>Open <a className="link" href="https://api-dashboard.search.brave.com" target="_blank" rel="noopener noreferrer">api-dashboard.search.brave.com</a> and create an account, then confirm your email.</>,
+    <>Go to <b>Subscriptions</b> and pick the <b>Search</b> plan. Brave asks for a credit card and adds $5 of free credit every month (about 1,000 searches).</>,
+    <>To avoid charges, set a monthly limit in the dashboard if it offers one, and keep an eye on usage. Brave's terms ask for a “Powered by Brave” mention to keep the free credit.</>,
+    <>Go to <b>API Keys</b>, click <b>Add API key</b>, name it “Reachout”, copy it, paste it below and press <b>Save</b>.</>,
+  ],
+};
+
 function KeysDrawer({ open, onClose, keys, onSaved }) {
   const [v, setV] = useState({ tavily: "", brave: "" });
   const [busy, setBusy] = useState(false);
@@ -265,7 +280,12 @@ function KeysDrawer({ open, onClose, keys, onSaved }) {
         {SOURCES.slice(1).map(([id, label, hint, url]) => (
           <div key={id} className="ai-key">
             <b>{label}</b> {keys[id] && <Badge tone="ok">Saved</Badge>}
-            <p className="help">{hint} <a className="link" href={url} target="_blank" rel="noopener noreferrer">Get a free key</a></p>
+            <p className="help">{hint}</p>
+            <details className="ai-steps-howto" open={!keys[id]}>
+              <summary>How to get a {label.split(" ")[0]} key</summary>
+              <ol>{KEY_STEPS[id].map((step, i) => <li key={i}>{step}</li>)}</ol>
+              <a className="btn btn-sm" href={url} target="_blank" rel="noopener noreferrer">Open {label.split(" ")[0]}<Icon name="link" /></a>
+            </details>
             <div className="ai-key-row">
               <input className="input" type="password" autoComplete="off" value={v[id]} placeholder={keys[id] ? "Replace the saved key" : "Paste your API key"} onChange={e => setV(x => ({ ...x, [id]: e.target.value }))} />
               <Button variant="primary" busy={busy} disabled={!v[id].trim()} onClick={() => save(id, v[id].trim())}>Save</Button>
@@ -273,7 +293,7 @@ function KeysDrawer({ open, onClose, keys, onSaved }) {
             </div>
           </div>
         ))}
-        <Alert tone="info">Keys are stored encrypted and are only used for your own searches. They're never shown again or sent to your browser.</Alert>
+        <Alert tone="info">You don't need either key: <b>Company career sites</b> works without one. Keys are stored encrypted, used only for your own searches, and never shown again or sent to your browser.</Alert>
       </div>
     </Drawer>
   );
