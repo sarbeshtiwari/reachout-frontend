@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { api } from "../lib/api";
 import { go } from "../lib/router";
 import { useApp } from "../lib/store";
-import { Alert, Badge, Button, Check, Drawer, DrawerHead, Empty, Field, Icon, Switch, fail, modal, toast } from "../ui/kit";
+import { Alert, Badge, Button, Check, Drawer, DrawerHead, Empty, Field, Icon, Seg, Switch, fail, modal, toast } from "../ui/kit";
 
 const SOURCES = [
   ["career_sites", "Company career sites", "Greenhouse, Lever & Ashby job boards. No key needed.", null],
