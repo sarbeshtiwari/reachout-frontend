@@ -13,7 +13,7 @@ import Notifications from "./Notifications";
 // Sidebar: pinned pages first, then sections that can be folded away (remembered in a cookie).
 export const NAV = [
   { key: "main", group: null, items: [["dashboard", "Dashboard", "home"], ["activity", "Activity", "activity"]] },
-  { key: "outreach", group: "Outreach", icon: "send", items: [["contacts", "Contacts", "users", "contacts"], ["replies", "Replies", "reply", "replies"],
+  { key: "outreach", group: "Outreach", icon: "send", items: [["contacts", "Contacts", "users", "contacts"], ["finder", "Email finder", "search"], ["replies", "Replies", "reply", "replies"],
     ["templates", "Templates", "message"], ["files", "Files", "file"], ["inbox", "Inbox insights", "inbox"]] },
   { key: "career", group: "Career", icon: "briefcase", items: [["applications", "Applications", "briefcase", "apps"], ["jobs", "Job matches", "zap", "jobs"], ["posts", "Hiring posts", "message", "queue"]] },
   { key: "website", group: "My website", icon: "globe", items: [["portfolio", "Website & portfolio", "star"], ["leads", "Leads", "inbox", "leads"]] },

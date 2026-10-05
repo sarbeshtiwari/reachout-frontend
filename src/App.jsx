@@ -27,6 +27,7 @@ const P = {
   profile: lazy(() => import("./pages/Profile")),
   settings: lazy(() => import("./pages/Settings")),
   leads: lazy(() => import("./pages/Leads")),
+  finder: lazy(() => import("./pages/Finder")),
 };
 export const TITLES = {
   dashboard: ["Dashboard", ""],
@@ -48,6 +49,7 @@ export const TITLES = {
   whatsapp: ["WhatsApp", "Link your WhatsApp once. Messages are sent from your own number."],
   profile: ["Profile & email", "Your details, the email account messages are sent from, and Gmail sync."],
   settings: ["Settings", ""],
+  finder: ["Email finder", "Find the HR and careers email addresses that companies publish on their websites, then save them as contacts."],
   leads: ["Leads", "Enquiries from the contact form on your website. Reply, add notes and track each one."],
 };
 
