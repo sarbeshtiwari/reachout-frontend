@@ -28,13 +28,6 @@ export const Button = forwardRef(function Button({ variant = "", size = "", icon
   );
 });
 
-// Runs an async click handler with a busy state on the button.
-export function useBusy() {
-  const [busy, setBusy] = useState(false);
-  const run = fn => async (...a) => { if (busy) return; setBusy(true); try { return await fn(...a); } finally { setBusy(false); } };
-  return [busy, run];
-}
-
 /* ---------------------------------------------------------------- toasts */
 const toasts = createStore([]);
 let tid = 0;
@@ -248,14 +241,6 @@ export function CountUp({ value, suffix = "" }) {
   return <>{out}</>;
 }
 
-/* ---------------------------------------------------------------- list animation helpers */
-export const listItem = {
-  initial: { opacity: 0, y: 10 },
-  animate: i => ({ opacity: 1, y: 0, transition: { delay: Math.min(i, 12) * .03, duration: .28, ease } }),
-  exit: { opacity: 0, scale: .98, transition: { duration: .15 } },
-};
-export const stagger = { animate: { transition: { staggerChildren: .045 } } };
-export const rise = { initial: { opacity: 0, y: 14 }, animate: { opacity: 1, y: 0, transition: { duration: .35, ease } } };
 
 // Debounced value (search boxes).
 export function useDebounced(value, ms = 150) {

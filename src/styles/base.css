@@ -86,7 +86,6 @@ button { font: inherit; color: inherit; }
 .mono { font-family: var(--mono); font-size: 12px; }
 .nowrap { white-space: nowrap; }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
-.err-text { color: var(--danger); }
 .warn-text { color: var(--warning); }
 .link-btn { background: none; border: 0; padding: 0; color: var(--accent-text); cursor: pointer; font-weight: 500; }
 .link-btn:hover { text-decoration: underline; }

@@ -7,7 +7,6 @@ export const kb = n => n > 1048576 ? (n / 1048576).toFixed(1) + " MB" : Math.max
 export const ext = n => ((n || "").split(".").pop() || "").toLowerCase();
 export const initials = t => (t || "?").replace(/[^A-Za-z0-9& ]/g, " ").trim().split(/\s+/).filter(Boolean).map(w => w[0]).slice(0, 2).join("").toUpperCase() || "?";
 export const hue = s => [...(s || "")].reduce((h, c) => (h * 31 + c.charCodeAt(0)) % 360, 7);
-export const plural = (n, one, many = one + "s") => `${n} ${n === 1 ? one : many}`;
 
 export const today = () => new Date(Date.now() - new Date().getTimezoneOffset() * 6e4).toISOString().slice(0, 10);
 export const addDays = n => new Date(Date.now() - new Date().getTimezoneOffset() * 6e4 + n * 864e5).toISOString().slice(0, 10);

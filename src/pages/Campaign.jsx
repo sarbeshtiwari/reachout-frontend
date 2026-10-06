@@ -3,7 +3,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { api } from "../lib/api";
 import { EMAIL_RE, bracesOk, initials, kb } from "../lib/format";
 import { useApp } from "../lib/store";
-import { Alert, Button, Field, FileIcon, FormError, Icon, Switch, fail, modal, spring, toast } from "../ui/kit";
+import { Alert, Button, Field, FileIcon, FormError, Icon, Switch, fail, modal, toast } from "../ui/kit";
 import { FieldChips, insertAt } from "../ui/shared";
 
 const CORE = ["name", "company", "phone", "email"];

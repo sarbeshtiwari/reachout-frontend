@@ -152,12 +152,6 @@ body.sv-open { overflow: hidden; }
 @media (prefers-reduced-motion: reduce) { .hud-scan, .spin, .hud-eq i, .led { animation: none !important; } }
 
 .hud:not(.sending):not(.waiting):not(.starting):not(.stopping) .hud-target { visibility: hidden; }
-.bounce-bar { display: flex; align-items: center; gap: 14px; padding: 14px 18px; margin-bottom: 16px; flex-wrap: wrap; }
-.bounce-bar .grow { min-width: 240px; }
-.bounce-bar b { display: block; font-weight: 600; margin-bottom: 2px; }
-.bb-ic { width: 36px; height: 36px; border-radius: 9px; display: grid; place-items: center; background: var(--accent-soft); color: var(--accent-text); flex: none; }
-.sent-controls { display: flex; align-items: flex-end; gap: 10px; flex-wrap: wrap; margin: 14px 0 4px; }
-.sent-controls .field { min-width: 180px; }
 .sent-bar { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin: 14px 0 10px; }
 .sent-wrap { max-height: 420px; border: 1px solid var(--border); border-radius: var(--r); }
 #sentTable .clip { max-width: 30ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

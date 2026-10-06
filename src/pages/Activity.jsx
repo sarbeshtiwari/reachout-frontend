@@ -1,10 +1,10 @@
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import { useEffect, useMemo, useState } from "react";
 import { api } from "../lib/api";
 import { emit, on } from "../lib/bus";
 import { ago } from "../lib/format";
 import { useApp } from "../lib/store";
-import { Bar, gradient, useChartTheme } from "../ui/charts";
+import { Bar, useChartTheme } from "../ui/charts";
 import { Badge, Button, Chips, Drawer, DrawerHead, Empty, Icon, Seg, Sk, fail, toast, useDebounced, Pager, usePager } from "../ui/kit";
 import { Kpi } from "../ui/shared";
 
